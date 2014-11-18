@@ -70,7 +70,7 @@ public class Main {
 			if(totalTime >= 1000000000)
 			{
 				if(frame < 60)
-					System.out.println(frame);
+					//System.out.println(frame);
 				totalTime = 0;
 				frame = 0;
 			}

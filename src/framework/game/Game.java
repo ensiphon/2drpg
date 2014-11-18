@@ -1,10 +1,13 @@
 package framework.game;
 
+import static org.lwjgl.opengl.GL11.*;
 import java.util.ArrayList;
 import org.lwjgl.opengl.Display;
 import framework.game.gameobject.Player;
 import framework.game.gameobject.Wall;
-import framework.game.gameobject.item.Cube;
+import framework.game.gameobject.item.Ruby;
+import framework.game.gameobject.item.Emerald;
+import framework.game.gameobject.item.Sapphire;
 import framework.main.GameObject;
 import framework.main.Physics;
 
@@ -28,13 +31,22 @@ public class Game
 		remove = new ArrayList<GameObject>();
 		
 		player = new Player(Display.getWidth()/2 - Player.SIZE/2, Display.getHeight()/2 - Player.SIZE/2);
-		
+
 		objects.add(player);
 		generateTestLevel();
-		objects.add(new Cube(250,250));
-		/*objects.add(new CookieMonster(300,500,1));
-		objects.add(new CookieMonster(50,500,1));
-		objects.add(new Wall(200,200,1,300));*/
+		for(int i = 1; i <= 7; i++)
+		{
+			objects.add(new Sapphire(184+(35*i),220 + 200));
+		}
+		for(int i = 1; i <= 7; i++)
+		{
+			objects.add(new Ruby(184+(35*i),220 + 35 + 200));
+		}
+		for(int i = 1; i <= 7; i++)
+		{
+			objects.add(new Emerald(184+(35*i),220 + 35 + 35 + 200));
+		}
+		//objects.add(new CookieMonster(300,500,1));
 	}
 	
 	public void getInput()
@@ -43,7 +55,7 @@ public class Game
 	}
 	
 	public void update()
-	{
+	{	
 		for(GameObject go : objects)
 		{
 			if(!go.getRemove())
@@ -61,9 +73,15 @@ public class Game
 	}
 	
 	public void render()
-	{
+	{	
+		glTranslatef(Display.getWidth()/2 - Player.SIZE/2, Display.getHeight()/2 - Player.SIZE/2,0);
+		player.render();
+		glTranslatef(-1 * player.getX(), -1 * player.getY(), 0);
 		for(GameObject go : objects)
-			go.render();
+			if(go.getType() != GameObject.PLAYER_ID)
+				go.render();		
+		glLoadIdentity();
+		player.guimain.render(player.inventory);
 	}
 	
 	public ArrayList<GameObject> getObjects()

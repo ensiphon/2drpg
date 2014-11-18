@@ -1,9 +1,7 @@
 package framework.game.gameobject;
 
-import static org.lwjgl.opengl.GL11.*;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
 
 import framework.game.Delay;
 import framework.game.Game;
@@ -11,6 +9,7 @@ import framework.game.Time;
 import framework.game.Util;
 //import framework.game.gameobject.item.Equipment;
 import framework.game.gameobject.item.Item;
+import framework.main.GUIMain;
 import framework.main.GameObject;
 
 public class Player extends StatObject
@@ -22,8 +21,9 @@ public class Player extends StatObject
 	public static final int LEFT = 2;
 	public static final int RIGHT = 3;
 	
-	private Inventory inventory;
+	public Inventory inventory;
 	//private Equipment equipment;
+	public GUIMain guimain;
 
 	private float attackRange;
 	private int facingDirection;
@@ -49,6 +49,7 @@ public class Player extends StatObject
 		moveAmountX = 0;
 		moveAmountY = 0;
 		attackDelay.terminate();
+		guimain = new GUIMain();
 	}
 	
 	@Override
@@ -65,9 +66,11 @@ public class Player extends StatObject
 		{
 			if(go.getType() == GameObject.ITEM_ID)
 			{
-				System.out.println("You picked up " + ((Item)go).getName());
-				go.setRemove();
-				addItem((Item)go);
+				if(inventory.itemNum < 20)
+				{
+					go.setRemove();
+					addItem((Item)go);
+				}
 			}
 			if(go.getSolid())
 			{
@@ -103,14 +106,16 @@ public class Player extends StatObject
 			move(1,0);
 		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && attackDelay.isOver())
 			attack();
+		if(Keyboard.isKeyDown(Keyboard.KEY_Q))
+			guimain.toggleInventory(true);		
+		if(Keyboard.isKeyDown(Keyboard.KEY_E))
+			guimain.toggleInventory(false);
 	}
 	
 	@Override
 	public void render()
 	{
-		glTranslatef(Display.getWidth()/2 - Player.SIZE/2, Display.getHeight()/2 - Player.SIZE/2,0);
 		spr.render();
-		glTranslatef(-x,-y,0);
 	}
 	
 	public void attack()
